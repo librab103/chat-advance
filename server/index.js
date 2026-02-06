@@ -1,21 +1,18 @@
-//index.js
+
 const express = require('express');
 const app = express();
-const PORT = 4000;
-
-//New Imports
-const http = require('http').Server(app);
 const cors = require('cors');
-
-app.use(cors());
-
+const http = require('http').Server(app);
+const PORT = 4000;
 const socketIO = require('socket.io')(http, {
     cors: {
         origin: "http://localhost:3000"
     }
 });
 
-//Add this before the app.get() block
+app.use(cors());
+
+
 socketIO.on('connection', (socket) => {
     console.log(`⚡: ${socket.id} user just connected!`);
     socket.on('disconnect', () => {
@@ -29,6 +26,6 @@ app.get('/api', (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
+http.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
