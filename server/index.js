@@ -4,6 +4,7 @@ import { createServer } from 'node:http';
 import cors from 'cors';
 import { Server } from 'socket.io';
 
+const PORT = process.env.PORT || 4000;
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
@@ -12,21 +13,23 @@ const io = new Server(server, {
   }
 });
 
-const PORT = process.env.PORT || 4000;
+
 app.use(cors());
 
-app.get('/api', (req, res) => {
-  res.send('<h1>Hello world</h1>');
+{/* Need to add a comment about what this does */}
+io.on('connection', (socket) => {
+  console.log(`${socket.id} has connected`);
+
+{/* Step 3. socket.on listens for a 'packet' with the event name of 'send_message' and re-emits a new 'packet' with the event name of 'recieve_message' with the same message */}
+  socket.on('send_message', (data) => {
+    socket.broadcast.emit('receive_message', data)
+  })
 });
 
-let users = [];
-
-io.on('connection', (socket) => {
-  console.log(`${socket.id} user just connected!`);
-  
+  /** 
   socket.on('message', (data) => {
     socketIO.emit('messageResponse', data);
-  });
+
 
   socket.on('typing', (data) => socket.broadcast.emit('typingResponse', data));
 
@@ -49,6 +52,7 @@ io.on('connection', (socket) => {
     socket.disconnect();
   });
 });
+*/
 
 server.listen(PORT, () => {
   console.log(`server running at http://localhost:${PORT}`);
