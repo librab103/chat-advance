@@ -5,13 +5,7 @@ const Home = ({ socket }) => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    localStorage.setItem('userName', userName);
-    //sends the username and socket ID to the Node.js server
-    socket.emit('newUser', { userName, socketID: socket.id });
-    navigate('/chat');
-  };
+  
   
   return (
     <form className="home__container" onSubmit={handleSubmit}>

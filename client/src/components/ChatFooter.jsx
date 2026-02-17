@@ -1,36 +1,30 @@
 import React, { useState } from 'react';
 
-const ChatFooter = () => {
-  const [message, setMessage] = useState('');
+function ChatFooter ({ sendMessage }) {
+  const [input, setInput] = useState('');
 
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (message.trim() && localStorage.getItem('userName')) {
-      socket.emit('message', {
-        text: message,
-        name: localStorage.getItem('userName'),
-        id: `${socket.id}${Math.random()}`,
-        socketID: socket.id,
-      });
-    }
-    setMessage('');
+  const handleChange = (e) => {
+    setInput(e.target.value);
   };
-  
-  return (
-    <div className="chat__footer">
-      <form className="form" onSubmit={handleSendMessage}>
+
+  const handleSubmit = (e) => {
+        e.preventDefault();
+        sendMessage(input);
+        setInput('');
+    };
+
+    return (
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Write message"
-          className="message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={handleTyping}
+          value={input}
+          onChange={handleChange}
+          placeholder=''
+
         />
-        <button className="sendBtn">SEND</button>
+        <button type="submit">Send</button>
       </form>
-    </div>
-  );
-};
+    );
+}
 
 export default ChatFooter;

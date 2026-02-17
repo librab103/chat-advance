@@ -9,50 +9,28 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000"
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"]
   }
 });
 
 
 app.use(cors());
 
-{/* Need to add a comment about what this does */}
-io.on('connection', (socket) => {
+/* listens for new client connections to the server */
+io.on('connection', (socket) => { // on() method listens for events. 'connection' is the event name that indicates a new client has connected.
   console.log(`${socket.id} has connected`);
 
-{/* Step 3. socket.on listens for a 'packet' with the event name of 'send_message' and re-emits a new 'packet' with the event name of 'recieve_message' with the same message */}
-  socket.on('send_message', (data) => {
-    socket.broadcast.emit('receive_message', data)
+/* Step 3. socket.on listens for a 'packet' with the event name of 'send_message' and re-emits a new 'packet' with the event name of 'recieve_message' with the same message */
+  socket.on('send_message', (msg) => {
+    io.emit('receive_message', msg)
   })
-});
-
-  /** 
-  socket.on('message', (data) => {
-    socketIO.emit('messageResponse', data);
-
-
-  socket.on('typing', (data) => socket.broadcast.emit('typingResponse', data));
-
-  //Listens when a new user joins the server
-  socket.on('newUser', (data) => {
-    //Adds the new user to the list of users
-    users.push(data);
-    // console.log(users);
-    //Sends the list of users to the client
-    socketIO.emit('newUserResponse', users);
-  });
 
   socket.on('disconnect', () => {
-    console.log(`${socket.id} has disconnected`);
-    //Updates the list of users when a user disconnects from the server
-    users = users.filter((user) => user.socketID !== socket.id);
-    // console.log(users);
-    //Sends the list of users to the client
-    socketIO.emit('newUserResponse', users);
-    socket.disconnect();
-  });
+        console.log(`${socket.id} has disconnected`);
+    });
 });
-*/
+
 
 server.listen(PORT, () => {
   console.log(`server running at http://localhost:${PORT}`);
